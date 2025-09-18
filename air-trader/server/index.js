@@ -7,7 +7,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5002;
 const JWT_SECRET = process.env.JWT_SECRET || 'air_trader_secret_key';
 
 // 미들웨어
@@ -42,6 +42,15 @@ function initializeDatabase() {
     password TEXT NOT NULL,
     eco_credits INTEGER DEFAULT 1000000,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`);
+
+  // 사용자 자산 테이블
+  db.run(`CREATE TABLE IF NOT EXISTS holdings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL UNIQUE,
+    jcai_amount INTEGER DEFAULT 0,
+    avg_price REAL DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users (id)
   )`);
 
   // 선물 계약 테이블
@@ -221,15 +230,15 @@ app.get('/api/portfolio', authenticateToken, (req, res) => {
         return res.status(500).json({ error: '보유 자산 조회 중 오류가 발생했습니다.' });
       }
       
-      db.all('SELECT * FROM short_positions WHERE user_id = ? AND is_active = 1', [userId], (err, shortPositions) => {
+      db.all('SELECT * FROM futures_contracts WHERE user_id = ? AND is_active = 1', [userId], (err, futuresContracts) => {
         if (err) {
-          return res.status(500).json({ error: '공매도 포지션 조회 중 오류가 발생했습니다.' });
+          return res.status(500).json({ error: '선물 계약 조회 중 오류가 발생했습니다.' });
         }
         
         res.json({
           eco_credits: user.eco_credits,
           holdings: holdings || { jcai_amount: 0, avg_price: 0 },
-          short_positions: shortPositions || []
+          futures_contracts: futuresContracts || []
         });
       });
     });
