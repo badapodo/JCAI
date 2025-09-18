@@ -166,6 +166,9 @@ async function fetchWithAuth(url, options = {}) {
 // 대시보드 데이터 로드
 async function loadDashboard() {
   try {
+    // 차트 초기화 (과거 데이터 포함)
+    await initChart();
+
     // JCAI 지수 로드
     await fetchJcai();
     
@@ -175,12 +178,9 @@ async function loadDashboard() {
     // 거래 내역 로드
     await fetchTransactions();
     
-    // 차트 초기화
-    initChart();
-    
     // 주기적으로 데이터 업데이트
-    setInterval(fetchJcai, 5000);
-    setInterval(fetchPortfolio, 10000);
+    setInterval(fetchJcai, 5000); // 실시간 지수는 계속 업데이트
+    setInterval(fetchPortfolio, 10000); // 포트폴리오는 10초마다
   } catch (error) {
     console.error('대시보드 로드 오류:', error);
   }
@@ -205,7 +205,7 @@ async function fetchJcai() {
     updateMarginAndLiquidation();
     
     // 차트 데이터 업데이트
-    updateChartData(data.jcai);
+    updateChartData(data);
     
     return data;
   } catch (error) {
@@ -329,7 +329,7 @@ async function fetchTransactions() {
       row.innerHTML = `
         <td>${formattedDate}</td>
         <td>${typeMap[tx.type] || tx.type}</td>
-        <td>${tx.amount.toLocaleString()}</td>
+        <td>${tx.contract_size.toLocaleString()}</td>
         <td>${tx.price.toLocaleString()}</td>
         <td>${tx.total_value.toLocaleString()}</td>
       `;
@@ -344,75 +344,42 @@ async function fetchTransactions() {
   }
 }
 
-// 공매도 포지션 업데이트
-function updateShortPositions(positions) {
-  if (positions.length === 0) {
-    noPositions.style.display = 'block';
-    positionsList.style.display = 'none';
-    return;
-  }
-  
-  noPositions.style.display = 'none';
-  positionsList.style.display = 'block';
-  
-  positionsTableBody.innerHTML = '';
-  
-  positions.forEach(position => {
-    const row = document.createElement('tr');
-    
-    const priceDiff = position.entry_price - currentJcai;
-    const profitLoss = priceDiff * position.amount;
-    const profitLossClass = profitLoss >= 0 ? 'text-profit' : 'text-loss';
-    
-    row.innerHTML = `
-      <td>${position.amount.toLocaleString()}</td>
-      <td>${position.entry_price.toLocaleString()}</td>
-      <td>${currentJcai.toLocaleString()}</td>
-      <td class="${profitLossClass}">${profitLoss.toLocaleString()}</td>
-      <td><button class="btn btn-sm btn-warning close-position" data-id="${position.id}">청산</button></td>
-    `;
-    
-    positionsTableBody.appendChild(row);
-  });
-  
-  // 청산 버튼 이벤트 리스너 추가
-  document.querySelectorAll('.close-position').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      const positionId = e.target.dataset.id;
-      await closeShortPosition(positionId);
-    });
-  });
-}
-
 // 차트 초기화
-function initChart() {
+async function initChart() {
   try {
     const canvas = document.getElementById('jcai-chart');
     if (!canvas) {
       console.error('차트 캔버스를 찾을 수 없습니다.');
       return;
     }
-    
-    const ctx = canvas.getContext('2d');
-    
+
+    // API를 통해 과거 데이터 가져오기
+    const historyData = await fetch(`${API_BASE_URL}/jcai/history`).then(res => res.json());
+
     // 차트 데이터 초기화
     chartData.labels = [];
     chartData.values = [];
-    
-    // 초기 데이터 생성 (24시간 더미 데이터)
-    const now = new Date();
-    for (let i = 23; i >= 0; i--) {
-      const time = new Date(now);
-      time.setHours(now.getHours() - i);
-      
-      chartData.labels.push(time.getHours().toString().padStart(2, '0') + ':00');
-      
-      // 8000~9000 사이의 랜덤값 (실제로는 API에서 받아와야 함)
-      const randomValue = Math.floor(Math.random() * 1000) + 8000;
-      chartData.values.push(randomValue);
+
+    if (historyData && historyData.length > 0) {
+        historyData.forEach(item => {
+            const date = new Date(item.hour);
+            chartData.labels.push(`${date.getHours().toString().padStart(2, '0')}:00`);
+            chartData.values.push(item.value);
+        });
+    } else {
+        // API에서 데이터를 가져오지 못한 경우, 24시간 더미 데이터로 채움
+        console.warn("Could not fetch history data, falling back to dummy data.");
+        const now = new Date();
+        for (let i = 23; i >= 0; i--) {
+            const time = new Date(now);
+            time.setHours(now.getHours() - i);
+            chartData.labels.push(time.getHours().toString().padStart(2, '0') + ':00');
+            const randomValue = Math.floor(Math.random() * 1000) + 8000;
+            chartData.values.push(randomValue);
+        }
     }
     
-    // 이미 차트가 있으면 파괴
+    const ctx = canvas.getContext('2d');
     if (jcaiChart) {
       jcaiChart.destroy();
     }
@@ -434,9 +401,7 @@ function initChart() {
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            display: false
-          },
+          legend: { display: false },
           tooltip: {
             callbacks: {
               label: function(context) {
@@ -448,17 +413,15 @@ function initChart() {
         scales: {
           y: {
             beginAtZero: false,
-            min: function() {
-              return Math.min(...chartData.values) - 500;
-            },
-            max: function() {
-              return Math.max(...chartData.values) + 500;
+            ticks: {
+                callback: function(value, index, values) {
+                    return value.toLocaleString();
+                }
             }
           }
         }
       }
     });
-    
     console.log('차트가 성공적으로 초기화되었습니다.');
   } catch (error) {
     console.error('차트 초기화 오류:', error);
@@ -466,16 +429,21 @@ function initChart() {
 }
 
 // 차트 데이터 업데이트
-function updateChartData(newValue) {
+function updateChartData(newData) {
   try {
-    // 현재 시간 가져오기
-    const now = new Date();
+    const now = new Date(newData.timestamp);
     const currentHour = now.getHours().toString().padStart(2, '0');
     const currentMinute = now.getMinutes().toString().padStart(2, '0');
-    
+    const newLabel = `${currentHour}:${currentMinute}`;
+
+    // 마지막 레이블과 같으면 업데이트하지 않음 (중복 방지)
+    if (chartData.labels[chartData.labels.length - 1] === newLabel) {
+        return;
+    }
+
     // 새 데이터 추가
-    chartData.labels.push(`${currentHour}:${currentMinute}`);
-    chartData.values.push(newValue);
+    chartData.labels.push(newLabel);
+    chartData.values.push(newData.jcai);
     
     // 24개 데이터만 유지
     if (chartData.labels.length > 24) {
@@ -487,24 +455,12 @@ function updateChartData(newValue) {
     if (jcaiChart) {
       jcaiChart.data.labels = chartData.labels;
       jcaiChart.data.datasets[0].data = chartData.values;
-      
-      // y축 범위 업데이트
-      if (jcaiChart.options.scales.y) {
-        const minValue = Math.min(...chartData.values) - 500;
-        const maxValue = Math.max(...chartData.values) + 500;
-        jcaiChart.options.scales.y.min = minValue;
-        jcaiChart.options.scales.y.max = maxValue;
-      }
-      
       jcaiChart.update();
     } else {
-      // 차트가 없으면 초기화
       initChart();
     }
   } catch (error) {
     console.error('차트 데이터 업데이트 오류:', error);
-    // 오류 발생 시 차트 재초기화 시도
-    initChart();
   }
 }
 
@@ -527,10 +483,8 @@ function updateMarginAndLiquidation() {
   // 청산가 계산
   let liquidationValue;
   if (isLong) {
-    // 롱 포지션: 진입가격 - (진입가격 / 레버리지) * 0.9
     liquidationValue = price - (price / leverageValue) * 0.9;
   } else {
-    // 숏 포지션: 진입가격 + (진입가격 / 레버리지) * 0.9
     liquidationValue = price + (price / leverageValue) * 0.9;
   }
   
