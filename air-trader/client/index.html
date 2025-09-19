@@ -5,58 +5,272 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Air Trader - 전북의 하늘에 베팅하라!</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    :root {
+      --primary-sky: #87CEEB;
+      --secondary-sky: #B0E0E6;
+      --light-sky: #F0F8FF;
+      --deep-sky: #4682B4;
+      --clean-white: #FFFFFF;
+      --soft-gray: #F8FAFC;
+      --text-dark: #2D3748;
+      --text-light: #718096;
+      --success-green: #48BB78;
+      --danger-red: #F56565;
+    }
+
     body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #f8f9fa;
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--light-sky) 0%, var(--secondary-sky) 100%);
+      min-height: 100vh;
+      color: var(--text-dark);
     }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(135, 206, 235, 0.2);
+      box-shadow: 0 2px 20px rgba(135, 206, 235, 0.1);
+    }
+
     .navbar-brand {
-      font-weight: bold;
-      color: #198754;
+      font-weight: 700;
+      color: var(--deep-sky) !important;
+      font-size: 1.5rem;
+      text-shadow: 0 1px 2px rgba(70, 130, 180, 0.1);
     }
+
+    .nav-link {
+      color: var(--text-dark) !important;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      margin: 0 4px;
+      padding: 8px 16px !important;
+    }
+
+    .nav-link:hover {
+      color: var(--deep-sky) !important;
+      background-color: rgba(135, 206, 235, 0.1);
+      transform: translateY(-1px);
+    }
+
     .jcai-value {
-      font-size: 2.5rem;
-      font-weight: bold;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--deep-sky);
+      text-shadow: 0 2px 4px rgba(70, 130, 180, 0.1);
     }
+
     .card {
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(135, 206, 235, 0.15);
+      margin-bottom: 24px;
+      border: 1px solid rgba(135, 206, 235, 0.2);
+      background: var(--clean-white);
+      transition: all 0.3s ease;
     }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(135, 206, 235, 0.2);
+    }
+
     .card-header {
-      font-weight: bold;
-      background-color: #f8f9fa;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--light-sky) 0%, rgba(176, 224, 230, 0.5) 100%);
+      border-bottom: 1px solid rgba(135, 206, 235, 0.2);
+      border-radius: 16px 16px 0 0 !important;
+      color: var(--deep-sky);
     }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-sky) 0%, var(--deep-sky) 100%);
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      padding: 12px 24px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(135, 206, 235, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(135, 206, 235, 0.4);
+      background: linear-gradient(135deg, var(--deep-sky) 0%, var(--primary-sky) 100%);
+    }
+
+    .btn-outline-primary {
+      border: 2px solid var(--primary-sky);
+      color: var(--deep-sky);
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+      background: var(--primary-sky);
+      border-color: var(--primary-sky);
+      transform: translateY(-2px);
+    }
+
     .btn-trade {
       width: 100%;
-      margin-top: 10px;
+      margin-top: 12px;
+      border-radius: 12px;
+      font-weight: 600;
     }
+
     .pm-data {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
+      font-weight: 600;
     }
+
     .login-container {
-      max-width: 400px;
+      max-width: 420px;
       margin: 100px auto;
+      background: var(--clean-white);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(135, 206, 235, 0.2);
     }
+
     .dashboard-container {
       display: none;
     }
+
     .text-profit {
-      color: #198754;
+      color: var(--success-green);
+      font-weight: 600;
     }
+
     .text-loss {
-      color: #dc3545;
+      color: var(--danger-red);
+      font-weight: 600;
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, var(--clean-white) 0%, var(--light-sky) 100%);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(135, 206, 235, 0.2);
+      box-shadow: 0 8px 32px rgba(135, 206, 235, 0.1);
+    }
+
+    .feature-box {
+      transition: all 0.3s ease;
+      border-radius: 16px;
+      padding: 24px;
+      background: var(--clean-white);
+      border: 1px solid rgba(135, 206, 235, 0.1);
+    }
+
+    .feature-box:hover {
+      transform: translateY(-8px);
+      background: var(--light-sky);
+      box-shadow: 0 12px 40px rgba(135, 206, 235, 0.2);
+    }
+
+    .shadow-lg {
+      box-shadow: 0 20px 60px rgba(135, 206, 235, 0.2) !important;
+    }
+
+    .form-control {
+      border-radius: 12px;
+      border: 2px solid rgba(135, 206, 235, 0.2);
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-sky);
+      box-shadow: 0 0 0 0.2rem rgba(135, 206, 235, 0.25);
+    }
+
+    .badge {
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 8px 12px;
+    }
+
+    .bg-success {
+      background: linear-gradient(135deg, var(--success-green) 0%, #38A169 100%) !important;
+    }
+
+    .bg-danger {
+      background: linear-gradient(135deg, var(--danger-red) 0%, #E53E3E 100%) !important;
+    }
+
+    .container {
+      max-width: 1200px;
+    }
+
+    /* 스크롤바 스타일링 */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--light-sky);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary-sky);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--deep-sky);
+    }
+
+    /* 애니메이션 */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out;
     }
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-      <a class="navbar-brand" href="#">Air Trader</a>
-      <div class="ms-auto">
-        <span id="user-email" class="me-3"></span>
-        <button id="logout-btn" class="btn btn-outline-secondary btn-sm">로그아웃</button>
+      <a class="navbar-brand" href="#" onclick="showPage('home')">Air Trader</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="showPage('trading')">거래</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="showPage('rewards')">리워드</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="showPage('board')">게시판</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="showPage('news')">대기질 뉴스</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="showPage('mypage')">마이페이지</a>
+          </li>
+        </ul>
+        <div class="ms-auto">
+          <span id="user-email" class="me-3"></span>
+          <button id="logout-btn" class="btn btn-outline-secondary btn-sm">로그아웃</button>
+        </div>
       </div>
     </div>
   </nav>
@@ -105,25 +319,209 @@
     </div>
   </div>
 
-  <!-- 대시보드 화면 -->
-  <div id="dashboard-container" class="container dashboard-container mt-4">
-    <div class="row">
-      <!-- 현재 지수 및 데이터 -->
-      <div class="col-md-12 mb-4">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5 class="card-title">전북 청정공기지수 (JCAI)</h5>
-            <div class="jcai-value" id="jcai-value">8,500</div>
-            <div class="row mt-3">
-              <div class="col-6 pm-data">
-                <span>PM2.5: </span>
-                <span id="pm25-value">15.2</span>
-                <span> μg/m³</span>
+  <!-- 홈 화면 -->
+  <div id="home-container" class="container dashboard-container mt-4 fade-in-up">
+    <!-- 메인 히어로 섹션 -->
+    <div class="hero-section py-5 mb-5">
+      <div class="row align-items-center justify-content-center">
+        <div class="col-lg-10 col-xl-8 text-center">
+          <h1 class="display-3 fw-bold mb-4" style="color: var(--deep-sky);">
+            🌤️ Air Trader
+          </h1>
+          <h2 class="h4 mb-4" style="color: var(--text-light);">
+            전북의 하늘에 베팅하라!
+          </h2>
+          <p class="lead mb-4 mx-auto" style="color: var(--text-dark); max-width: 600px; line-height: 1.6;">
+            공기가 깨끗해질수록 가치가 상승하는<br>
+            <strong style="color: var(--deep-sky);">전북 청정공기지수(JCAI)</strong>를<br>
+            가상 재화로 거래하세요!
+          </p>
+          <div class="d-flex flex-column flex-sm-row gap-3 mb-5 justify-content-center">
+            <button class="btn btn-primary btn-lg px-5 py-3" onclick="showPage('trading')">
+              📈 거래 시작하기
+            </button>
+            <button class="btn btn-outline-primary btn-lg px-5 py-3" onclick="showPage('news')">
+              📰 대기질 뉴스
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- JCAI 지수 카드를 히어로 섹션 하단에 중앙 배치 -->
+      <div class="row justify-content-center mt-5">
+        <div class="col-lg-6 col-xl-5">
+          <div class="card shadow-lg border-0" style="background: linear-gradient(135deg, var(--light-sky) 0%, var(--clean-white) 100%);">
+            <div class="card-body p-4 text-center">
+              <h5 class="card-title mb-3" style="color: var(--deep-sky);">현재 JCAI 지수</h5>
+              <div class="jcai-value mb-3" id="home-jcai-value">8,500</div>
+              <div class="row text-center">
+                <div class="col-6">
+                  <div class="pm-data" style="color: var(--success-green);">
+                    PM2.5<br>
+                    <span id="home-pm25-value">15.2</span> μg/m³
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="pm-data" style="color: var(--primary-sky);">
+                    PM10<br>
+                    <span id="home-pm10-value">35</span> μg/m³
+                  </div>
+                </div>
               </div>
-              <div class="col-6 pm-data">
-                <span>PM10: </span>
-                <span id="pm10-value">35</span>
-                <span> μg/m³</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 핵심 기능 소개 -->
+    <div class="row mb-5">
+      <div class="col-12 text-center mb-4">
+        <h3 class="h2 fw-bold" style="color: var(--deep-sky);">왜 Air Trader인가?</h3>
+        <p class="lead" style="color: var(--text-light);">환경과 투자를 결합한 새로운 경험</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="feature-box text-center h-100">
+          <div class="mb-3">
+            <div style="font-size: 3rem;">📊</div>
+          </div>
+          <h5 class="fw-bold mb-3" style="color: var(--deep-sky);">실시간 데이터</h5>
+          <p style="color: var(--text-light);">
+            전북 지역의 실제 미세먼지 데이터를 기반으로 한 
+            정확하고 투명한 지수 산정
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="feature-box text-center h-100">
+          <div class="mb-3">
+            <div style="font-size: 3rem;">⚡</div>
+          </div>
+          <h5 class="fw-bold mb-3" style="color: var(--deep-sky);">스마트 거래</h5>
+          <p style="color: var(--text-light);">
+            레버리지와 선물 거래를 통한 
+            고수익 투자 기회 제공
+          </p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="feature-box text-center h-100">
+          <div class="mb-3">
+            <div style="font-size: 3rem;">🌱</div>
+          </div>
+          <h5 class="fw-bold mb-3" style="color: var(--deep-sky);">환경 인식</h5>
+          <p style="color: var(--text-light);">
+            재미있는 거래를 통해 자연스럽게 
+            환경 문제에 관심을 갖게 됩니다
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 시작하기 섹션 -->
+    <div class="row mb-5">
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 border-0 shadow">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <div style="font-size: 2.5rem; margin-right: 1rem;">🎮</div>
+              <h5 class="card-title mb-0 fw-bold" style="color: var(--deep-sky);">게임처럼 쉬운 거래</h5>
+            </div>
+            <p class="card-text" style="color: var(--text-light);">
+              복잡한 금융 지식 없이도 직관적인 인터페이스로 
+              누구나 쉽게 거래할 수 있습니다.
+            </p>
+            <ul class="list-unstyled">
+              <li class="mb-2">✅ 원클릭 매수/매도</li>
+              <li class="mb-2">✅ 실시간 수익률 확인</li>
+              <li class="mb-2">✅ 자동 손절/익절 설정</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 border-0 shadow">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <div style="font-size: 2.5rem; margin-right: 1rem;">💰</div>
+              <h5 class="card-title mb-0 fw-bold" style="color: var(--success-green);">가상 자산 1,000,000 EC</h5>
+            </div>
+            <p class="card-text" style="color: var(--text-light);">
+              회원가입 시 100만 에코 크레딧을 지급받아 
+              바로 거래를 시작할 수 있습니다.
+            </p>
+            <ul class="list-unstyled">
+              <li class="mb-2">✅ 무료 가상 자산 제공</li>
+              <li class="mb-2">✅ 실제 손실 위험 없음</li>
+              <li class="mb-2">✅ 리워드 시스템 연동</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 커뮤니티 섹션 -->
+    <div class="card border-0 shadow-lg mb-5" style="background: linear-gradient(135deg, var(--light-sky) 0%, var(--secondary-sky) 100%);">
+      <div class="card-body p-5 text-center">
+        <h4 class="fw-bold mb-3" style="color: var(--deep-sky);">🌍 함께 만드는 깨끗한 전북</h4>
+        <p class="lead mb-4" style="color: var(--text-dark);">
+          게시판에서 다른 트레이더들과 정보를 공유하고,<br>
+          대기질 뉴스를 통해 최신 환경 정보를 확인하세요!
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+          <button class="btn btn-outline-primary px-4 py-2" onclick="showPage('board')">
+            💬 게시판 참여
+          </button>
+          <button class="btn btn-outline-primary px-4 py-2" onclick="showPage('rewards')">
+            🎁 리워드 확인
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 거래 화면 (기존 대시보드) -->
+  <div id="trading-container" class="container dashboard-container mt-4 fade-in-up">
+    <!-- 상단 지수 정보 -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, var(--clean-white) 0%, var(--light-sky) 100%);">
+          <div class="card-body p-4">
+            <div class="row align-items-center">
+              <div class="col-md-4 text-center">
+                <h5 class="mb-2" style="color: var(--deep-sky);">🌤️ JCAI 지수</h5>
+                <div class="jcai-value" id="jcai-value" style="color: var(--deep-sky);">8,500</div>
+                <small class="text-muted">전북 청정공기지수</small>
+              </div>
+              <div class="col-md-4 text-center">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="pm-data" style="color: var(--success-green);">
+                      <div style="font-size: 0.9rem; color: var(--text-light);">PM2.5</div>
+                      <div style="font-size: 1.5rem; font-weight: 600;">
+                        <span id="pm25-value">15.2</span>
+                      </div>
+                      <small style="color: var(--text-light);">μg/m³</small>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="pm-data" style="color: var(--primary-sky);">
+                      <div style="font-size: 0.9rem; color: var(--text-light);">PM10</div>
+                      <div style="font-size: 1.5rem; font-weight: 600;">
+                        <span id="pm10-value">35</span>
+                      </div>
+                      <small style="color: var(--text-light);">μg/m³</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 text-center">
+                <div class="d-flex justify-content-center gap-2">
+                  <div class="badge bg-success px-3 py-2">
+                    <div style="font-size: 0.8rem;">대기질</div>
+                    <div style="font-size: 1rem; font-weight: 600;">좋음</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -132,30 +530,170 @@
     </div>
 
     <div class="row">
-      <!-- 차트 -->
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-header">JCAI 지수 변화 (최근 24시간)</div>
-          <div class="card-body">
+      <!-- 차트 섹션 -->
+      <div class="col-lg-8 mb-4">
+        <div class="card border-0 shadow">
+          <div class="card-header" style="background: var(--light-sky); border-bottom: 1px solid rgba(135, 206, 235, 0.2);">
+            <div class="d-flex justify-content-between align-items-center">
+              <h6 class="mb-0 fw-bold" style="color: var(--deep-sky);">📊 JCAI 지수 변화</h6>
+              <small style="color: var(--text-light);">최근 24시간</small>
+            </div>
+          </div>
+          <div class="card-body p-4">
             <canvas id="jcai-chart"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- 내 정보 요약 -->
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-header">내 자산 정보</div>
-          <div class="card-body">
+      <!-- 자산 정보 및 빠른 거래 -->
+      <div class="col-lg-4 mb-4">
+        <div class="card border-0 shadow mb-3">
+          <div class="card-header" style="background: var(--light-sky); border-bottom: 1px solid rgba(135, 206, 235, 0.2);">
+            <h6 class="mb-0 fw-bold" style="color: var(--deep-sky);">💰 내 자산 정보</h6>
+          </div>
+          <div class="card-body p-4">
             <div class="mb-3">
-              <h6>에코 크레딧 (EC)</h6>
-              <h4 id="eco-credits">1,000,000 EC</h4>
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="color: var(--text-light);">에코 크레딧</span>
+                <span class="fw-bold" style="color: var(--success-green); font-size: 1.2rem;" id="eco-credits">1,000,000 EC</span>
+              </div>
             </div>
             <div class="mb-3">
-              <h6>JCAI 보유량</h6>
-              <h4 id="jcai-holdings">0 JCAI</h4>
-              <div id="avg-price-container" style="display: none;">
-                <small>평균 매수가: <span id="avg-price">0</span> EC</small>
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="color: var(--text-light);">JCAI 보유량</span>
+                <span class="fw-bold" style="color: var(--deep-sky); font-size: 1.2rem;" id="jcai-holdings">0 JCAI</span>
+              </div>
+              <div id="avg-price-container" style="display: none;" class="mt-1">
+                <small style="color: var(--text-light);">평균 매수가: <span id="avg-price">0</span> EC</small>
+              </div>
+            </div>
+            <hr style="border-color: rgba(135, 206, 235, 0.2);">
+            <div class="text-center">
+              <button class="btn btn-primary btn-sm px-4" onclick="scrollToTrading()">
+                ⚡ 빠른 거래
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 거래 섹션 -->
+    <div class="row" id="trading-section">
+      <!-- 거래 패널 -->
+      <div class="col-lg-6 mb-4">
+        <div class="card border-0 shadow">
+          <div class="card-header" style="background: var(--light-sky); border-bottom: 1px solid rgba(135, 206, 235, 0.2);">
+            <h6 class="mb-0 fw-bold" style="color: var(--deep-sky);">⚡ 선물 계약 거래</h6>
+          </div>
+          <div class="card-body p-4">
+            <!-- 포지션 타입 선택 -->
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-3" style="color: var(--text-dark);">포지션 타입</label>
+              <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="position-type" id="position-long" autocomplete="off" checked>
+                <label class="btn btn-outline-success fw-bold" for="position-long" style="border-radius: 12px 0 0 12px;">
+                  📈 롱 포지션
+                </label>
+                
+                <input type="radio" class="btn-check" name="position-type" id="position-short" autocomplete="off">
+                <label class="btn btn-outline-danger fw-bold" for="position-short" style="border-radius: 0 12px 12px 0;">
+                  📉 숏 포지션
+                </label>
+              </div>
+            </div>
+            
+            <!-- 거래 설정 -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="contract-size" class="form-label fw-bold" style="color: var(--text-dark);">계약 크기</label>
+                <input type="number" class="form-control" id="contract-size" min="0.1" step="0.1" value="1" style="border-radius: 12px;">
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="trade-price" class="form-label fw-bold" style="color: var(--text-dark);">현재 가격 (EC)</label>
+                <input type="number" class="form-control" id="trade-price" readonly style="border-radius: 12px; background-color: var(--soft-gray);">
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="leverage" class="form-label fw-bold" style="color: var(--text-dark);">레버리지</label>
+                <select class="form-select" id="leverage" style="border-radius: 12px;">
+                  <option value="1">1x (안전)</option>
+                  <option value="2">2x (보통)</option>
+                  <option value="5" selected>5x (공격적)</option>
+                  <option value="10">10x (고위험)</option>
+                </select>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="expiry-hours" class="form-label fw-bold" style="color: var(--text-dark);">만기 시간</label>
+                <select class="form-select" id="expiry-hours" style="border-radius: 12px;">
+                  <option value="1">1시간</option>
+                  <option value="4">4시간</option>
+                  <option value="8">8시간</option>
+                  <option value="24" selected>24시간</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- 계산된 정보 -->
+            <div class="card mb-3" style="background: var(--light-sky); border: 1px solid rgba(135, 206, 235, 0.3);">
+              <div class="card-body p-3">
+                <div class="row text-center">
+                  <div class="col-6">
+                    <div style="color: var(--text-light); font-size: 0.9rem;">필요 증거금</div>
+                    <div class="fw-bold" style="color: var(--deep-sky); font-size: 1.1rem;">
+                      <span id="margin-amount">0</span> EC
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div style="color: var(--text-light); font-size: 0.9rem;">청산 가격</div>
+                    <div class="fw-bold" style="color: var(--danger-red); font-size: 1.1rem;">
+                      <span id="liquidation-price">0</span> EC
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <button class="btn btn-primary btn-lg w-100 fw-bold" id="contract-create-btn" style="border-radius: 12px; padding: 12px;">
+              🚀 계약 생성하기
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 선물 계약 포지션 -->
+      <div class="col-lg-6 mb-4">
+        <div class="card border-0 shadow">
+          <div class="card-header" style="background: var(--light-sky); border-bottom: 1px solid rgba(135, 206, 235, 0.2);">
+            <h6 class="mb-0 fw-bold" style="color: var(--deep-sky);">📊 내 포지션</h6>
+          </div>
+          <div class="card-body p-4">
+            <div id="no-positions" class="text-center py-5">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
+              <h6 style="color: var(--text-light);">현재 보유한 선물 계약이 없습니다</h6>
+              <p style="color: var(--text-light); font-size: 0.9rem;">위에서 첫 번째 계약을 생성해보세요!</p>
+            </div>
+            <div id="positions-list" style="display: none;">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead style="background: var(--soft-gray);">
+                    <tr>
+                      <th style="border: none; color: var(--text-dark); font-weight: 600;">유형</th>
+                      <th style="border: none; color: var(--text-dark); font-weight: 600;">크기</th>
+                      <th style="border: none; color: var(--text-dark); font-weight: 600;">진입가</th>
+                      <th style="border: none; color: var(--text-dark); font-weight: 600;">레버리지</th>
+                      <th style="border: none; color: var(--text-dark); font-weight: 600;">손익</th>
+                      <th style="border: none; color: var(--text-dark); font-weight: 600;">액션</th>
+                    </tr>
+                  </thead>
+                  <tbody id="positions-table-body">
+                    <!-- 포지션 목록이 여기에 동적으로 추가됩니다 -->
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -163,90 +701,35 @@
       </div>
     </div>
 
+    <!-- 최근 거래 내역 -->
     <div class="row mt-4">
-      <!-- 거래 패널 -->
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">선물 계약 거래</div>
-          <div class="card-body">
-            <div class="btn-group w-100 mb-3" role="group">
-              <input type="radio" class="btn-check" name="position-type" id="position-long" autocomplete="off" checked>
-              <label class="btn btn-outline-success" for="position-long">롱 포지션</label>
-              
-              <input type="radio" class="btn-check" name="position-type" id="position-short" autocomplete="off">
-              <label class="btn btn-outline-danger" for="position-short">숏 포지션</label>
-            </div>
-            
-            <div class="mb-3">
-              <label for="contract-size" class="form-label">계약 크기</label>
-              <input type="number" class="form-control" id="contract-size" min="0.1" step="0.1" value="1">
-            </div>
-            
-            <div class="mb-3">
-              <label for="trade-price" class="form-label">가격 (EC)</label>
-              <input type="number" class="form-control" id="trade-price" readonly>
-            </div>
-            
-            <div class="mb-3">
-              <label for="leverage" class="form-label">레버리지</label>
-              <select class="form-select" id="leverage">
-                <option value="1">1x</option>
-                <option value="2">2x</option>
-                <option value="5" selected>5x</option>
-                <option value="10">10x</option>
-              </select>
-            </div>
-            
-            <div class="mb-3">
-              <label for="expiry-hours" class="form-label">만기 시간 (시간)</label>
-              <select class="form-select" id="expiry-hours">
-                <option value="1">1시간</option>
-                <option value="4">4시간</option>
-                <option value="8">8시간</option>
-                <option value="24" selected>24시간</option>
-              </select>
-            </div>
-            
-            <div class="mb-3">
-              <label for="margin-amount" class="form-label">필요 증거금 (EC)</label>
-              <input type="number" class="form-control" id="margin-amount" readonly>
-            </div>
-            
-            <div class="mb-3">
-              <label for="liquidation-price" class="form-label">청산 가격 (EC)</label>
-              <input type="number" class="form-control" id="liquidation-price" readonly>
-            </div>
-            
-            <button class="btn btn-primary btn-trade" id="contract-create-btn">계약 생성</button>
+      <div class="col-12">
+        <div class="card border-0 shadow">
+          <div class="card-header" style="background: var(--light-sky); border-bottom: 1px solid rgba(135, 206, 235, 0.2);">
+            <h6 class="mb-0 fw-bold" style="color: var(--deep-sky);">📋 최근 거래 내역</h6>
           </div>
-        </div>
-      </div>
-
-      <!-- 선물 계약 포지션 -->
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">선물 계약 포지션</div>
-          <div class="card-body">
-            <div id="no-positions" class="text-center py-3">
-              <p class="text-muted">현재 보유한 선물 계약이 없습니다.</p>
-            </div>
-            <div id="positions-list" style="display: none;">
-              <table class="table table-striped">
-                <thead>
+          <div class="card-body p-4">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead style="background: var(--soft-gray);">
                   <tr>
-                    <th>유형</th>
-                    <th>계약 크기</th>
-                    <th>진입가</th>
-                    <th>레버리지</th>
-                    <th>청산가</th>
-                    <th>만기시간</th>
-                    <th>현재가</th>
-                    <th>손익</th>
-                    <th>액션</th>
+                    <th style="border: none; color: var(--text-dark); font-weight: 600;">시간</th>
+                    <th style="border: none; color: var(--text-dark); font-weight: 600;">유형</th>
+                    <th style="border: none; color: var(--text-dark); font-weight: 600;">수량</th>
+                    <th style="border: none; color: var(--text-dark); font-weight: 600;">가격</th>
+                    <th style="border: none; color: var(--text-dark); font-weight: 600;">총액</th>
+                    <th style="border: none; color: var(--text-dark); font-weight: 600;">차익</th>
                   </tr>
                 </thead>
-                <tbody id="positions-table-body">
-                  <!-- 포지션 목록이 여기에 동적으로 추가됩니다 -->
+                <tbody id="transactions-table-body">
+                  <!-- 거래 내역이 여기에 추가됩니다 -->
+                  <tr>
+                    <td colspan="6" class="text-center py-5" style="color: var(--text-light);">
+                      <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
+                      <div>아직 거래 내역이 없습니다</div>
+                      <small>첫 번째 거래를 시작해보세요!</small>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -254,12 +737,319 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="row mt-4">
-      <!-- 거래 내역 -->
+  <!-- 리워드 페이지 -->
+  <div id="rewards-container" class="container mt-4" style="display: none;">
+    <!-- 헤더 섹션 -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <div class="hero-section" style="background: linear-gradient(135deg, var(--light-sky) 0%, var(--sky-blue) 100%); padding: 3rem 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);">
+          <h1 class="display-4 fw-bold mb-3" style="color: var(--deep-sky); text-shadow: 0 1px 2px rgba(255,255,255,0.5);">🎁 리워드 스토어</h1>
+          <p class="lead mb-4" style="color: var(--text-dark);">친환경 활동으로 얻은 포인트로 다양한 리워드를 받아보세요!</p>
+          <div class="d-inline-block" style="background: var(--deep-sky); padding: 1rem 2rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);">
+            <h4 class="mb-0" style="color: white;">💰 보유 포인트: <span class="fw-bold">1,250P</span></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 리워드 카테고리 -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <h4 class="fw-bold mb-3" style="color: var(--text-dark);">🌱 친환경 교통</h4>
+      </div>
+    </div>
+
+    <!-- 리워드 아이템들 -->
+    <div class="row">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card border-0 shadow h-100" style="border-radius: 20px; overflow: hidden; transition: transform 0.3s ease;">
+          <div class="card-body text-center p-4" style="background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);">
+            <div class="reward-icon mb-3" style="font-size: 4rem;">🚴‍♂️</div>
+            <h5 class="card-title fw-bold mb-2" style="color: var(--text-dark);">자전거 쿠폰</h5>
+            <p class="card-text mb-3" style="color: var(--text-light);">따릉이 1시간 무료 이용권</p>
+            <div class="price-tag mb-3" style="background: var(--success-green); color: white; padding: 0.5rem 1rem; border-radius: 25px; display: inline-block;">
+              <strong>500P</strong>
+            </div>
+            <button class="btn btn-success btn-lg w-100 fw-bold" onclick="showRewardAlert()" style="border-radius: 15px; padding: 12px;">
+              ✨ 교환하기
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card border-0 shadow h-100" style="border-radius: 20px; overflow: hidden; transition: transform 0.3s ease;">
+          <div class="card-body text-center p-4" style="background: linear-gradient(135deg, #e3f2fd 0%, #f1f8ff 100%);">
+            <div class="reward-icon mb-3" style="font-size: 4rem;">🚌</div>
+            <h5 class="card-title fw-bold mb-2" style="color: var(--text-dark);">교통카드 충전</h5>
+            <p class="card-text mb-3" style="color: var(--text-light);">대중교통 5,000원 충전권</p>
+            <div class="price-tag mb-3" style="background: var(--sky-blue); color: white; padding: 0.5rem 1rem; border-radius: 25px; display: inline-block;">
+              <strong>1,000P</strong>
+            </div>
+            <button class="btn btn-primary btn-lg w-100 fw-bold" onclick="showRewardAlert()" style="border-radius: 15px; padding: 12px;">
+              ✨ 교환하기
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card border-0 shadow h-100" style="border-radius: 20px; overflow: hidden; transition: transform 0.3s ease;">
+          <div class="card-body text-center p-4" style="background: linear-gradient(135deg, #fff3e0 0%, #fef7ed 100%);">
+            <div class="reward-icon mb-3" style="font-size: 4rem;">🌱</div>
+            <h5 class="card-title fw-bold mb-2" style="color: var(--text-dark);">친환경 제품</h5>
+            <p class="card-text mb-3" style="color: var(--text-light);">에코백 & 텀블러 세트</p>
+            <div class="price-tag mb-3" style="background: #ff9800; color: white; padding: 0.5rem 1rem; border-radius: 25px; display: inline-block;">
+              <strong>1,500P</strong>
+            </div>
+            <button class="btn btn-warning btn-lg w-100 fw-bold" onclick="showRewardAlert()" style="border-radius: 15px; padding: 12px; color: white;">
+              ✨ 교환하기
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 추가 카테고리 -->
+    <div class="row mb-4 mt-5">
+      <div class="col-12">
+        <h4 class="fw-bold mb-3" style="color: var(--text-dark);">🎯 특별 혜택</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6 mb-4">
+        <div class="card border-0 shadow h-100" style="border-radius: 20px; overflow: hidden; background: linear-gradient(135deg, var(--deep-sky) 0%, var(--sky-blue) 100%);">
+          <div class="card-body text-center p-4 text-white">
+            <div class="reward-icon mb-3" style="font-size: 4rem;">🏆</div>
+            <h5 class="card-title fw-bold mb-2">프리미엄 멤버십</h5>
+            <p class="card-text mb-3" style="color: rgba(255,255,255,0.9);">1개월 무료 거래 수수료</p>
+            <div class="price-tag mb-3" style="background: rgba(255,255,255,0.2); color: white; padding: 0.5rem 1rem; border-radius: 25px; display: inline-block;">
+              <strong>2,000P</strong>
+            </div>
+            <button class="btn btn-light btn-lg w-100 fw-bold" onclick="showRewardAlert()" style="border-radius: 15px; padding: 12px; color: var(--deep-sky);">
+              ✨ 교환하기
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 mb-4">
+        <div class="card border-0 shadow h-100" style="border-radius: 20px; overflow: hidden; background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);">
+          <div class="card-body text-center p-4 text-white">
+            <div class="reward-icon mb-3" style="font-size: 4rem;">💚</div>
+            <h5 class="card-title fw-bold mb-2">환경 기부</h5>
+            <p class="card-text mb-3" style="color: rgba(255,255,255,0.9);">나무 심기 프로젝트 후원</p>
+            <div class="price-tag mb-3" style="background: rgba(255,255,255,0.2); color: white; padding: 0.5rem 1rem; border-radius: 25px; display: inline-block;">
+              <strong>500P</strong>
+            </div>
+            <button class="btn btn-light btn-lg w-100 fw-bold" onclick="showRewardAlert()" style="border-radius: 15px; padding: 12px; color: #4caf50;">
+              ✨ 기부하기
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 게시판 페이지 -->
+  <div id="board-container" class="container mt-4" style="display: none;">
+    <!-- 헤더 섹션 -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <div class="hero-section" style="background: linear-gradient(135deg, var(--light-sky) 0%, var(--sky-blue) 100%); padding: 3rem 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);">
+          <h1 class="display-4 fw-bold mb-3" style="color: var(--deep-sky); text-shadow: 0 1px 2px rgba(255,255,255,0.5);">📊 포트폴리오 게시판</h1>
+          <p class="lead mb-4" style="color: var(--text-dark);">다른 트레이더들의 포트폴리오를 확인하고 자신의 성과를 공유해보세요!</p>
+          <button class="btn btn-lg fw-bold" onclick="showPostForm()" style="background: var(--deep-sky); color: white; border-radius: 15px; padding: 12px 30px; border: none; box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);">
+            ✍️ 포트폴리오 공유하기
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 포스트 작성 폼 -->
+    <div id="post-form" class="row mb-5" style="display: none;">
+      <div class="col-12">
+        <div class="card border-0 shadow" style="border-radius: 20px;">
+          <div class="card-header" style="background: var(--light-sky); border-bottom: 1px solid rgba(135, 206, 235, 0.2); border-radius: 20px 20px 0 0;">
+            <h5 class="mb-0 fw-bold" style="color: var(--deep-sky);">✨ 포트폴리오 공유</h5>
+          </div>
+          <div class="card-body p-4">
+            <form id="portfolio-post-form">
+              <div class="row">
+                <div class="col-md-8 mb-3">
+                  <label for="post-title" class="form-label fw-bold" style="color: var(--text-dark);">제목</label>
+                  <input type="text" class="form-control" id="post-title" required style="border-radius: 12px; padding: 12px;" placeholder="예: 이번 주 +15% 수익 달성! 나의 전략 공유">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="profit-amount" class="form-label fw-bold" style="color: var(--text-dark);">실현 차익 (EC)</label>
+                  <input type="number" class="form-control" id="profit-amount" placeholder="0" readonly style="border-radius: 12px; padding: 12px; background-color: var(--soft-gray);">
+                  <div class="form-text">총 손익이 자동으로 계산됩니다</div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label for="post-content" class="form-label fw-bold" style="color: var(--text-dark);">내용</label>
+                <textarea class="form-control" id="post-content" rows="5" placeholder="포트폴리오 성과와 전략을 공유해주세요..." required style="border-radius: 12px; padding: 12px;"></textarea>
+              </div>
+              <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold" style="border-radius: 12px; padding: 12px 30px;">
+                  🚀 게시하기
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-lg fw-bold" onclick="hidePostForm()" style="border-radius: 12px; padding: 12px 30px;">
+                  취소
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 게시글 목록 -->
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="fw-bold mb-0" style="color: var(--text-dark);">💬 커뮤니티 포스트</h4>
+          <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="sort-options" id="sort-latest" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="sort-latest" style="border-radius: 12px 0 0 12px;">최신순</label>
+            
+            <input type="radio" class="btn-check" name="sort-options" id="sort-popular" autocomplete="off">
+            <label class="btn btn-outline-primary" for="sort-popular" style="border-radius: 0 12px 12px 0;">인기순</label>
+          </div>
+        </div>
+        
+        <div id="posts-list">
+          <!-- 게시글들이 여기에 동적으로 추가됩니다 -->
+          <div class="text-center py-5" style="color: var(--text-light);">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+            <h5>아직 게시글이 없습니다</h5>
+            <p>첫 번째 포트폴리오를 공유해보세요!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 대기질 뉴스 페이지 -->
+  <div id="news-container" class="container mt-4" style="display: none;">
+    <!-- 헤더 섹션 -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <div class="hero-section" style="background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%); padding: 3rem 2rem; border-radius: 20px; margin-bottom: 2rem;">
+          <h1 class="display-4 fw-bold mb-3" style="color: white;">🌿 전북 대기질 뉴스</h1>
+          <p class="lead mb-4" style="color: rgba(255,255,255,0.9);">전라북도 지역의 최신 대기질 관련 뉴스를 확인하세요</p>
+          <button class="btn btn-light btn-lg fw-bold" onclick="loadNews()" style="border-radius: 15px; padding: 12px 30px; color: #4caf50;">
+            🔄 뉴스 새로고침
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 뉴스 필터 및 정렬 -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4 class="fw-bold mb-0" style="color: var(--text-dark);">📰 최신 뉴스</h4>
+          <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="news-filter" id="filter-all" autocomplete="off" checked>
+            <label class="btn btn-outline-success" for="filter-all" style="border-radius: 12px 0 0 12px;">전체</label>
+            
+            <input type="radio" class="btn-check" name="news-filter" id="filter-air" autocomplete="off">
+            <label class="btn btn-outline-success" for="filter-air" style="border-radius: 0;">대기질</label>
+            
+            <input type="radio" class="btn-check" name="news-filter" id="filter-env" autocomplete="off">
+            <label class="btn btn-outline-success" for="filter-env" style="border-radius: 0 12px 12px 0;">환경</label>
+          </div>
+        </div>
+      </div>
+    </div>
+        
+    <!-- 로딩 상태 -->
+    <div id="news-loading" class="text-center py-5" style="display: none;">
+      <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 text-muted fw-bold">뉴스를 불러오는 중...</p>
+    </div>
+    
+    <!-- 뉴스 목록 -->
+    <div id="news-list" class="row">
+      <!-- 뉴스 목록이 여기에 동적으로 추가됩니다 -->
+      <div class="col-12">
+        <div class="text-center py-5" style="color: var(--text-light);">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">📰</div>
+          <h5>뉴스를 불러오려면 새로고침 버튼을 클릭하세요</h5>
+          <p>전북 지역의 최신 대기질 뉴스를 확인할 수 있습니다</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 에러 상태 -->
+    <div id="news-error" class="alert alert-warning border-0 shadow" style="display: none; border-radius: 15px;">
+      <div class="d-flex align-items-center">
+        <div style="font-size: 2rem; margin-right: 1rem;">⚠️</div>
+        <div>
+          <h6 class="alert-heading mb-1">뉴스 로딩 실패</h6>
+          <p class="mb-0">뉴스를 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 마이페이지 -->
+  <div id="mypage-container" class="container mt-4" style="display: none;">
+    <div class="row">
+      <div class="col-md-12">
+        <h2>마이페이지</h2>
+      </div>
+    </div>
+    
+    <!-- 포트폴리오 요약 -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">포트폴리오 요약</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <p><strong>보유 EC:</strong> <span id="mypage-eco-credits">0</span> EC</p>
+                <p><strong>보유 JCAI:</strong> <span id="mypage-jcai-amount">0</span></p>
+              </div>
+              <div class="col-6">
+                <p><strong>평균 단가:</strong> <span id="mypage-avg-price">0</span> EC</p>
+                <p><strong>총 손익:</strong> <span id="mypage-total-pnl">0</span> EC</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">거래 통계</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <p><strong>총 거래 횟수:</strong> <span id="mypage-total-trades">0</span></p>
+                <p><strong>수익 거래:</strong> <span id="mypage-profit-trades">0</span></p>
+              </div>
+              <div class="col-6">
+                <p><strong>손실 거래:</strong> <span id="mypage-loss-trades">0</span></p>
+                <p><strong>승률:</strong> <span id="mypage-win-rate">0</span>%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 거래 내역 -->
+    <div class="row">
       <div class="col-md-12">
         <div class="card">
-          <div class="card-header">최근 거래 내역</div>
+          <div class="card-header">전체 거래 내역</div>
           <div class="card-body">
             <table class="table">
               <thead>
@@ -269,9 +1059,10 @@
                   <th>수량</th>
                   <th>가격</th>
                   <th>총액</th>
+                  <th>손익</th>
                 </tr>
               </thead>
-              <tbody id="transactions-table-body">
+              <tbody id="mypage-transactions-table-body">
                 <!-- 거래 내역이 여기에 추가됩니다 -->
               </tbody>
             </table>
@@ -281,6 +1072,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
